@@ -9,6 +9,7 @@ const descriptions: Record<CommandName, string> = {
 };
 
 export default function App() {
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [command, setCommand] = useState<CommandName>("coverage");
   const [path, setPath] = useState(".");
   const [format, setFormat] = useState<"html" | "lcov" | "text">("html");
@@ -29,8 +30,12 @@ export default function App() {
     window.setTimeout(() => setCopied(false), 1600);
   };
 
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
   return (
-    <main>
+    <main data-theme={theme}>
       <nav>
         <a className="brand" href="#top" aria-label="Soroban Testkit home">
           <span className="brand-mark">S</span>
@@ -40,6 +45,15 @@ export default function App() {
           <a href="#modules">Modules</a>
           <a href="#commands">Commands</a>
           <a href="https://github.com/soroban-testkit/testkit-blockchain">GitHub ↗</a>
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+          >
+            <span aria-hidden="true">{theme === "dark" ? "☀️" : "🌙"}</span>
+            <span>{theme === "dark" ? "Light" : "Dark"}</span>
+          </button>
         </div>
       </nav>
 
@@ -67,7 +81,11 @@ export default function App() {
         <header><p className="eyebrow">One prelude. Seven focused modules.</p><h2>Everything a serious contract test needs.</h2></header>
         <div className="module-grid">
           {modules.map(([name, description], index) => (
-            <article key={name}>
+            <article
+              key={name}
+              tabIndex={0}
+              aria-label={`Module ${name}: ${description}`}
+            >
               <span>0{index + 1}</span><h3>{name}</h3><p>{description}</p>
             </article>
           ))}
